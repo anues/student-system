@@ -1,25 +1,31 @@
 <?php
 require_once 'db.php';
 
-// حذف الجدول القديم إن وجد لضمان نظافته
-$pdo->exec("DROP TABLE IF EXISTS users");
-
-// إنشاء الجدول من جديد
-$pdo->exec("CREATE TABLE users (
+// إنشاء جدول المستخدمين إن لم يكن موجوداً
+$pdo->exec("CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
     password TEXT NOT NULL
 )");
 
-// كلمة المرور هنا مشفرة بـ md5 لتتوافق مع كود login.php (كلمة المرور هي: 123)
-$username = 'admin';
-$password = md5('123');
+// إنشاء جدول الطلاب الرئيسي إن لم يكن موجوداً
+$pdo->exec("CREATE TABLE IF NOT EXISTS students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    department TEXT
+)");
 
-$stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-$stmt->execute([$username, $password]);
+// التأكد من وجود حساب المسؤول (admin / 123)
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
+$stmt->execute();
+if ($stmt->fetchColumn() == 0) {
+    $password = md5('123');
+    $insert = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+    $insert->execute(['admin', $password]);
+}
 
-echo "تم إنشاء الحساب بنجاح!<br>";
-echo "اسم المستخدم: <b>admin</b><br>";
-echo "كلمة المرور: <b>123</b><br>";
-echo '<a href="login.php">اضغط هنا للانتقال لصفحة تسجيل الدخول</a>';
+echo "تم إنشاء الجداول بنجاح تام!<br>";
+echo '<a href="login.php">اضغط هنا للذهاب إلى تسجيل الدخول والانتقال للبنود</a>';
 ?>
