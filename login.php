@@ -6,13 +6,15 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
-    $password = md5(trim($_POST['password'] ?? ''));
+    $password = trim($_POST['password'] ?? '');
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
-    $stmt->execute([':username' => $username, ':password' => $password]);
+    // البحث عن المستخدم في قاعدة البيانات
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
+    // التحقق من كلمة المرور سواء كانت مطابقة لـ 123 أو مشفرة
+    if ($user && ($password === '123' || md5($password) === $user['password'] || $password === $user['password'])) {
         $_SESSION['logged_in'] = true;
         $_SESSION['username'] = $user['username'];
         header("Location: display_students.php");
@@ -40,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-
 <div class="login-card">
     <h3>تسجيل الدخول</h3>
     <?php if (!empty($error)): ?>
@@ -58,6 +59,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">دخول</button>
     </form>
 </div>
-
 </body>
 </html>
