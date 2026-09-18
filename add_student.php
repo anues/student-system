@@ -7,7 +7,7 @@ $message = '';
 // 2. التحقق مما إذا كان المستخدم قد ضغط على زر الحفظ (إرسال البيانات)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        // معالجة رفع الصورة
+        // معالجة رفع الصورة وتحويلها إلى Base64 لتخزينها مباشرة في قاعدة البيانات
         $photo_name = null;
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
             $fileTmpPath = $_FILES['photo']['tmp_name'];
@@ -18,24 +18,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
             if (in_array($fileExtension, $allowedExtensions)) {
-                // تسمية الملف بشكل فريد لمنع التكرار
-                $newFileName = 'student_' . time() . '_' . rand(1000, 9999) . '.' . $fileExtension;
-                $uploadFileDir = './uploads/';
-
-                // إنشاء المجلد إذا لم يكن موجوداً
-                if (!is_dir($uploadFileDir)) {
-                    mkdir($uploadFileDir, 0755, true);
-                }
-
-                $dest_path = $uploadFileDir . $newFileName;
-
-                if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                    $photo_name = $newFileName;
-                }
+                $imgData = file_get_contents($fileTmpPath);
+                // تخزين الصورة مباشرة كـ Base64 لضمان عدم ضياعها على السيرفر
+                $photo_name = 'data:image/' . $fileExtension . ';base64,' . base64_encode($imgData);
             }
         }
 
-        // استعلام الإضافة متطابق تماماً مع هيكلة قاعدة البيانات الجديدة
+        // استعلام الإضافة متطابق تماماً مع هيكلة قاعدة البيانات
         $sql = "INSERT INTO students (
             academic_id, full_name, gender, nationality, national_id, mother_name,
             birth_date, birth_place, passport_number, passport_expiry, residency_type,
@@ -80,9 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ':photo'                  => $photo_name
         ]);
 
-        // الانتقال التلقائي للشاشة الرئيسية بعد الحفظ (يمكنك تغيير index.php إلى اسم ملف الشاشة الرئيسية لديك)
-       header("Location: display_students.php");
-exit();
+        // الانتقال التلقائي للشاشة الرئيسية بعد الحفظ
+        header("Location: display_students.php");
+        exit();
 
     } catch (PDOException $e) {
         if ($e->errorInfo[1] == 1062) {
@@ -99,18 +88,14 @@ exit();
 <head>
     <meta charset="UTF-8">
     <title>إضافة طالب جديد</title>
-    <!-- استدعاء مكتبة الأيقونات FontAwesome لتوفير أيقونة المنزل -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: Tahoma, Arial, sans-serif; background-color: #f4f7f6; margin: 20px; }
         .form-container { background: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 900px; margin: auto; }
-        
-        /* تنسيق رأس الصفحة وأيقونة العودة */
         .header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1f3c88; padding-bottom: 10px; margin-bottom: 20px; }
         h2 { color: #1f3c88; margin: 0; }
         .btn-home { background-color: #6c757d; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s; }
         .btn-home:hover { background-color: #5a6268; }
-
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .form-group { display: flex; flex-direction: column; }
         label { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #333; }
@@ -130,7 +115,6 @@ exit();
 <div class="form-container">
     <div class="header-flex">
         <h2>تسجيل طالب جديد</h2>
-        <!-- زر العودة للشاشة الرئيسية -->
         <a href="display_students.php" class="btn-home"><i class="fa-solid fa-house"></i> الشاشة الرئيسية</a>
     </div>
 
