@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 $host    = 'sql10.freesqldatabase.com';
 $dbname  = 'sql10837288';
 $user    = 'sql10837288';
-$pass    = 'anisanues203310'; 
+$pass    = '123456'; 
 
 try {
     // إنشاء الاتصال باستخدام PDO
