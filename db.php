@@ -3,18 +3,23 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// بيانات الاتصال السحابي (تأكد من وضع كلمة المرور القوية الجديدة هنا)
-$host    = getenv('DB_HOST')     ?: 'sql10.freesqldatabase.com';
-$dbname  = getenv('DB_NAME')     ?: 'sql10837288';
-$user    = getenv('DB_USER')     ?: 'sql10837288';
-$pass    = getenv('DB_PASS')     ?: 'anis203310$'; 
+// مسار تخزين قاعدة بيانات SQLite داخل المشروع
+$dbPath = __DIR__ . '/college.db';
 
 try {
-    // إنشاء الاتصال باستخدام PDO
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass, [
+    // إنشاء الاتصال باستخدام PDO و SQLite
+    $pdo = new PDO("sqlite:$dbPath", null, null, [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
+    
+    // إنشاء جدول افتراضي لتسجيل الدخول إذا لم يكن موجوداً
+    $pdo->exec("CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL
+    )");
+
 } catch (PDOException $e) {
     die("خطأ في الاتصال بقاعدة البيانات: " . $e->getMessage());
 }
