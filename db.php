@@ -11,41 +11,43 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
 
-    // جدول المستخدمين
+    // إنشاء جدول المستخدمين لتسجيل الدخول
     $pdo->exec("CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,
         password TEXT NOT NULL
     )");
 
-    // جدول الطلاب شاملاً لكافة الأعمدة والأسماء البديلة المحتملة
+    // إنشاء جدول الطلاب شاملاً لكافة الأعمدة التي يتطلبها نموذج الإضافة الخاص بك بدقة
     $pdo->exec("CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        academic_id TEXT,
-        name TEXT,
+        academic_id TEXT UNIQUE,
         full_name TEXT,
         gender TEXT,
         nationality TEXT,
-        mother_name TEXT,
         national_id TEXT,
-        passport_no TEXT,
-        passport_number TEXT,
-        birth_place TEXT,
+        mother_name TEXT,
         birth_date TEXT,
+        birth_place TEXT,
+        passport_number TEXT,
         passport_expiry TEXT,
-        residence_type TEXT,
         residency_type TEXT,
-        residence_expiry TEXT,
-        address TEXT,
+        residency_expiry TEXT,
+        current_address TEXT,
         registration_date TEXT,
         admission_year TEXT,
         academic_level TEXT,
-        department TEXT,
-        phone TEXT,
-        email TEXT
+        program_name TEXT,
+        enrollment_status TEXT,
+        academic_year TEXT,
+        is_equated INTEGER DEFAULT 0,
+        high_school_year TEXT,
+        high_school_grade TEXT,
+        high_school_percentage TEXT,
+        photo TEXT
     )");
 
-    // حساب المسؤول الافتراضي
+    // إنشاء حساب المسؤول الافتراضي (admin / 123) إن لم يكن موجوداً
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
     $stmt->execute();
     if ($stmt->fetchColumn() == 0) {
