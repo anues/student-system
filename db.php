@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 $host    = getenv('DB_HOST')     ?: 'sql10.freesqldatabase.com';
 $dbname  = getenv('DB_NAME')     ?: 'sql10837288';
 $user    = getenv('DB_USER')     ?: 'sql10837288';
-$pass    = getenv('DB_PASS')     ?: 'كلمة_المرور_القوية_التي_عيّنتها'; 
+$pass    = getenv('DB_PASS')     ?: 'anis203310$'; 
 
 try {
     // إنشاء الاتصال باستخدام PDO
