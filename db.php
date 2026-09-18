@@ -3,7 +3,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// مسار ثابت وموثوق لقاعدة بيانات SQLite داخل المشروع
 $dbPath = __DIR__ . '/college.db';
 
 try {
@@ -12,23 +11,39 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
 
-    // إنشاء جدول المستخدمين تلقائياً
+    // جدول المستخدمين
     $pdo->exec("CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL,
         password TEXT NOT NULL
     )");
 
-    // إنشاء جدول الطلاب تلقائياً (مع الأعمدة الأساسية المتوقعة)
+    // جدول الطلاب شاملاً لجميع الأعمدة وحقول الإدخال المطلوبة في النماذج
     $pdo->exec("CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT,
+        academic_id TEXT,
+        name TEXT,
+        full_name TEXT,
+        gender TEXT,
+        nationality TEXT,
+        mother_name TEXT,
+        national_id TEXT,
+        passport_no TEXT,
+        birth_place TEXT,
+        birth_date TEXT,
+        passport_expiry TEXT,
+        residence_type TEXT,
+        residence_expiry TEXT,
+        address TEXT,
+        registration_date TEXT,
+        admission_year TEXT,
+        academic_level TEXT,
+        department TEXT,
         phone TEXT,
-        department TEXT
+        email TEXT
     )");
 
-    // إنشاء حساب المسؤول افتراضياً إذا لم يكن موجوداً (admin / 123)
+    // حساب المسؤول الافتراضي
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = 'admin'");
     $stmt->execute();
     if ($stmt->fetchColumn() == 0) {
