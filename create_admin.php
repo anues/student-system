@@ -1,13 +1,22 @@
 <?php
 require 'db.php';
-$username = 'admin';
-$password = password_hash('123456', PASSWORD_DEFAULT); // كلمة المرور ستكون 123456
 
+// حذف الجدول القديم إن وجد لإنشاء جدول نظيف ومتوافق
+$pdo->exec("DROP TABLE IF EXISTS users");
+
+// إنشاء الجدول من جديد بالأعمدة القياسية
+$pdo->exec("CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+)");
+
+// إدخال حساب المسؤول (اسم المستخدم: admin ، كلمة المرور: 123)
 $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-try {
-    $stmt->execute([$username, $password]);
-    echo "تم إنشاء حساب المسؤول بنجاح! اسم المستخدم: admin | كلمة المرور: 123456";
-} catch (PDOException $e) {
-    echo "الحساب موجود مسبقاً أو حدث خطأ: " . $e->getMessage();
-}
+$stmt->execute(['admin', '123']);
+
+echo "تم إنشاء قاعدة البيانات والحساب بنجاح!<br>";
+echo "اسم المستخدم: <b>admin</b><br>";
+echo "كلمة المرور: <b>123</b><br>";
+echo '<a href="login.php">اضغط هنا الانتقال لصفحة تسجيل الدخول</a>';
 ?>
