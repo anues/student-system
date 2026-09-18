@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
 # تفعيل وحدات أباتشي
 RUN a2enmod rewrite
 
-# نسخ ملفات المشروع مباشرة إلى مسار الأباتشي الافتراضي
-COPY . /var/www/html
+# السماح بعرض محتويات المجلد إذا لم يوجد ملف index
+RUN echo "Options +Indexes" >> /etc/apache2/apache2.conf
 
-# إنشاء مجلدات التخزين والكاش تلقائياً لمنع أي أخطاء
-RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+# نسخ ملفات المشروع
+COPY . /var/www/html
 
 # ضبط الصلاحيات
 RUN chown -R www-data:www-data /var/www/html
