@@ -4,10 +4,10 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 // بيانات الاتصال بقاعدة البيانات
-$host    = '127.0.0.1';
-$dbname  = 'college_db';
-$user    = 'root';
-$pass    = ''; 
+$host    = 'sql10.freesqldatabase.com';
+$dbname  = 'sql10837288';
+$user    = 'sql10837288';
+$pass    = '1711567'; 
 
 try {
     // إنشاء الاتصال باستخدام PDO
