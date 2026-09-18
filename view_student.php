@@ -74,8 +74,8 @@ if (!$student) {
     <!-- بطاقة تعريفية علوية تحتوي على الصورة والاسم الأساسي -->
     <div class="profile-header-container">
         <div>
-            <?php if (!empty($student['photo']) && file_exists('uploads/' . $student['photo'])): ?>
-                <img src="uploads/<?= htmlspecialchars($student['photo']) ?>" alt="صورة الطالب" class="student-photo">
+            <?php if (!empty($student['photo'])): ?>
+                <img src="<?= $student['photo'] ?>" alt="صورة الطالب" class="student-photo">
             <?php else: ?>
                 <div class="student-photo">
                     <span><i class="fa-solid fa-user fa-2x" style="color: #ccc; margin-bottom: 5px;"></i><br>لا توجد صورة</span>
