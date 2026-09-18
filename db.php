@@ -2,12 +2,12 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
-// بيانات الاتصال بقاعدة البيانات
-$host    = 'sql10.freesqldatabase.com';
-$dbname  = 'sql10837288';
-$user    = 'sql10837288';
-$pass    = 'StudentSys@2026'; 
+
+// بيانات الاتصال السحابي (تأكد من وضع كلمة المرور القوية الجديدة هنا)
+$host    = getenv('DB_HOST')     ?: 'sql10.freesqldatabase.com';
+$dbname  = getenv('DB_NAME')     ?: 'sql10837288';
+$user    = getenv('DB_USER')     ?: 'sql10837288';
+$pass    = getenv('DB_PASS')     ?: 'كلمة_المرور_القوية_التي_عيّنتها'; 
 
 try {
     // إنشاء الاتصال باستخدام PDO
