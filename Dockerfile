@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# تثبيت الحزم المطلوبة
+# تثبيت الحزم المطلوبة وتفعيل تعريفات قاعدة البيانات لـ PHP
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -9,11 +9,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git
 
+# تثبيت وتفعيل درايفر MySQL الخاص بـ PHP
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
 # تفعيل وحدات أباتشي
 RUN a2enmod rewrite
-
-# السماح بعرض محتويات المجلد إذا لم يوجد ملف index
-RUN echo "Options +Indexes" >> /etc/apache2/apache2.conf
 
 # نسخ ملفات المشروع
 COPY . /var/www/html
