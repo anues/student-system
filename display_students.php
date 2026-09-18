@@ -185,6 +185,21 @@ $students = $stmt->fetchAll();
             background-color: #f8fafc;
         }
 
+        /* مصغرة الصورة في الجدول */
+        .table-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--primary);
+            background-color: #e9ecef;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
         /* أزرار الإجراءات داخل الجدول */
         .action-group {
             display: inline-flex;
@@ -318,6 +333,7 @@ $students = $stmt->fetchAll();
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>الصورة</th>
                         <th>الرقم الدراسي</th>
                         <th>الاسم الرباعي</th>
                         <th>الجنس</th>
@@ -333,6 +349,13 @@ $students = $stmt->fetchAll();
                         <?php foreach ($students as $index => $student): ?>
                             <tr>
                                 <td><?= $index + 1 ?></td>
+                                <td>
+                                    <?php if (!empty($student['photo'])): ?>
+                                        <img src="<?= $student['photo'] ?>" alt="صورة" class="table-avatar">
+                                    <?php else: ?>
+                                        <div class="table-avatar"><i class="fa-solid fa-user" style="font-size: 12px; color: #aaa;"></i></div>
+                                    <?php endif; ?>
+                                </td>
                                 <td><span class="badge-id"><?= htmlspecialchars($student['academic_id']) ?></span></td>
                                 <td style="font-weight: 700;"><?= htmlspecialchars($student['full_name']) ?></td>
                                 <td><?= htmlspecialchars($student['gender']) ?></td>
@@ -378,8 +401,8 @@ $students = $stmt->fetchAll();
                                                     <i class="fas fa-file-alt"></i> إخلاء طرف وسحب ملف
                                                 </a>
                                                 <a href="undertaking.php?id=<?= $student['id'] ?>" target="_blank">
-    <i class="fa-solid fa-file-signature"></i> نموذج تعهد
-</a>
+                                                    <i class="fa-solid fa-file-signature"></i> نموذج تعهد
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -388,7 +411,7 @@ $students = $stmt->fetchAll();
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9" style="padding: 20px; color: var(--text-muted);">لا توجد بيانات طلاب مسجلة حتى الآن.</td>
+                            <td colspan="10" style="padding: 20px; color: var(--text-muted);">لا توجد بيانات طلاب مسجلة حتى الآن.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -406,7 +429,7 @@ function searchTable() {
     let tr = table.getElementsByTagName("tr");
 
     for (let i = 0; i < tr.length; i++) {
-        let tdName = tr[i].getElementsByTagName("td")[2]; 
+        let tdName = tr[i].getElementsByTagName("td")[3]; // تم تغيير الفهرس إلى 3 بسبب إضافة عمود الصورة الجديد
         if (tdName) {
             let txtValue = tdName.textContent || tdName.innerText;
             if (txtValue.toLowerCase().indexOf(filter) > -1) {
