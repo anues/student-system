@@ -18,7 +18,7 @@ try {
         password TEXT NOT NULL
     )");
 
-    // جدول الطلاب شاملاً لجميع الأعمدة وحقول الإدخال المطلوبة في النماذج
+    // جدول الطلاب شاملاً لكافة الأعمدة المحتملة والبديلة
     $pdo->exec("CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         academic_id TEXT,
@@ -29,6 +29,7 @@ try {
         mother_name TEXT,
         national_id TEXT,
         passport_no TEXT,
+        passport_number TEXT,
         birth_place TEXT,
         birth_date TEXT,
         passport_expiry TEXT,
